@@ -68,8 +68,10 @@ static bool enter_data(DTE &dte, ModuleIf &device, Netif &netif)
     if (!device.setup_data_mode()) {
         return false;
     }
-    if (!device.set_mode(modem_mode::DATA_MODE)) {
-        return false;
+    while(1) {
+      if (device.set_mode(modem_mode::DATA_MODE)) {
+          break;
+      }
     }
     if (!dte.set_mode(modem_mode::DATA_MODE)) {
         return false;
@@ -212,7 +214,7 @@ bool DCE_Mode::set_unsafe(DTE *dte, ModuleIf *device, Netif &netif, modem_mode m
             return false;
         }
         device->set_mode(modem_mode::CMUX_MODE);    // switch the device into CMUX mode
-        usleep(100'000);                            // some devices need a few ms to switch
+        usleep(2'000'000);                          // some devices need a few ms to switch
 
         if (!dte->set_mode(modem_mode::CMUX_MODE)) {
             return false;
